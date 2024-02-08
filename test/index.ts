@@ -8,4 +8,4 @@ const files: File[] = await readDirectory(path);
 // console.log(files);
 
 const world = await readWorld(files);
-console.log(inspect(world,{ colors: true, depth: 1 }));
+console.log(inspect(world,{ colors: true, depth: null }));

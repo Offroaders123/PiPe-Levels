@@ -11,6 +11,7 @@ export const LEVEL_DAT_FORMAT = {
 
 export interface LevelDat extends NBTData {}
 
-export async function readLevelDat(data: Uint8Array): Promise<NBTData> {
-  return read(data,LEVEL_DAT_FORMAT);
+export async function readLevelDat(data: Buffer): Promise<NBTData> {
+  const levelDat: LevelDat = await read(data,LEVEL_DAT_FORMAT);
+  return levelDat;
 }
