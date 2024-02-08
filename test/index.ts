@@ -1,1 +1,11 @@
-import {} from "../src/index.js";
+import { inspect } from "node:util";
+import { readDirectory } from "./fs.js";
+import { readWorld } from "../src/index.js";
+
+const path = new URL("./world/Hi Mom",import.meta.url);
+
+const files: File[] = await readDirectory(path);
+// console.log(files);
+
+const world = await readWorld(files);
+console.log(inspect(world,{ colors: true, depth: 1 }));
