@@ -4,12 +4,7 @@ import { readLevelDat } from "./level.js";
 import type { EntitiesDat } from "./entities.js";
 import type { LevelDat } from "./level.js";
 
-export interface World {
-  chunks: WorldFileNameMap["chunks.dat"];
-  entities: WorldFileNameMap["entities.dat"];
-  levelDat: WorldFileNameMap["level.dat"];
-  levelDatOld: WorldFileNameMap["level.dat_old"];
-}
+export interface World extends WorldFileNameMap {}
 
 export async function readWorld(files: File[]): Promise<World> {
   const chunks = await readWorldFile("chunks.dat",files);
@@ -18,10 +13,10 @@ export async function readWorld(files: File[]): Promise<World> {
   const levelDatOld = await readWorldFile("level.dat_old",files);
 
   return {
-    chunks,
-    entities,
-    levelDat,
-    levelDatOld
+    "chunks.dat": chunks,
+    "entities.dat": entities,
+    "level.dat": levelDat,
+    "level.dat_old": levelDatOld
   };
 }
 
