@@ -5,7 +5,12 @@ export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
 
   console.log(data.subarray(0,SECTOR_LENGTH));
   const chunkEntries = readChunkEntries(data);
-  console.log(chunkEntries.slice(13,17));
+  // console.log(chunkEntries.slice(13,17));
+
+  const chunks = readChunks(chunkEntries);
+  console.log(chunks.slice(13,17));
+
+  return chunks;
 }
 
 export interface ChunksDat extends ReadonlyArray<Chunk | null> {
@@ -18,6 +23,30 @@ export interface Chunk {
   SkyLight: ByteArrayTag;
   BlockLight: ByteArrayTag;
   Biome: ByteArrayTag;
+}
+
+export function readChunks(entries: ChunkEntries): ChunksDat {
+  const chunksDat: ChunksDat = Object.seal(Array.from<ChunksDat[number]>({ length: CHUNKS_LENGTH }));
+
+  for (const [i,entry] of entries.entries()){
+    chunksDat[i] = readEntry(entry);
+  }
+
+  return chunksDat;
+}
+
+export function readEntry(entry: Entry): Chunk | null {
+  let { data } = entry;
+  if (data === null) return null;
+  const byteLength: number = data.readUint32LE(0);
+  data = data.subarray(byteLength);
+
+  const Blocks: ByteArrayTag = new Int8Array();
+  const Data: ByteArrayTag = new Int8Array();
+  const SkyLight: ByteArrayTag = new Int8Array();
+  const BlockLight: ByteArrayTag = new Int8Array();
+  const Biome: ByteArrayTag = new Int8Array();
+  return { Blocks, Data, SkyLight, BlockLight, Biome };
 }
 
 export const SECTOR_LENGTH = 4096;
