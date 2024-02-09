@@ -1,25 +1,20 @@
 import type { ByteArrayTag } from "nbtify";
 
-// // @ts-expect-error
-// Int8Array.prototype[Symbol.for("nodejs.util.inspect.custom")] = function(this: Int8Array){
-//   return `${Int8Array.name}(${this.byteLength})`;
-// };
-
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);
 
-  // console.log(data.subarray(0,SECTOR_LENGTH));
+  console.log(data.subarray(0,SECTOR_LENGTH));
   const chunkEntries = readChunkEntries(data);
   // console.log(chunkEntries.slice(13,17));
 
   const chunks = readChunks(chunkEntries);
-  // console.log(chunks.slice(13,17));
+  console.log(chunks.slice(13,17));
 
   return chunks;
 }
 
-export interface ChunksDat extends ReadonlyArray<Chunk | object> {
-  [index: number]: Chunk | object;
+export interface ChunksDat extends ReadonlyArray<Chunk | null> {
+  [index: number]: Chunk | null;
 }
 
 export interface Chunk {
@@ -42,9 +37,9 @@ export function readChunks(entries: ChunkEntries): ChunksDat {
 
 export const ENTRY_HEADER_LENGTH = 4;
 
-export function readEntry(entry: Entry): Chunk | object {
+export function readEntry(entry: Entry): Chunk | null {
   let { data } = entry;
-  if (data === null) return {};
+  if (data === null) return null;
   const byteLength: number = data.readUint32LE(0);
   data = data.subarray(ENTRY_HEADER_LENGTH,byteLength);
 
