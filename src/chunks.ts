@@ -35,11 +35,14 @@ export function readChunks(entries: ChunkEntries): ChunksDat {
   return chunksDat;
 }
 
+export const ENTRY_HEADER_LENGTH = 4;
+
 export function readEntry(entry: Entry): Chunk | null {
   let { data } = entry;
   if (data === null) return null;
   const byteLength: number = data.readUint32LE(0);
-  data = data.subarray(byteLength);
+  data = data.subarray(ENTRY_HEADER_LENGTH,byteLength);
+  return [data, byteLength - ENTRY_HEADER_LENGTH, data.byteLength];
 
   const Blocks: ByteArrayTag = new Int8Array();
   const Data: ByteArrayTag = new Int8Array();
