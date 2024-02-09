@@ -1,5 +1,3 @@
-export interface ChunksDat {}
-
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);
 
@@ -13,18 +11,25 @@ export const SECTOR_LENGTH = 4096;
 export const CHUNK_INDICIES_OFFSET = 0;
 export const CHUNK_INDEX_LENGTH = 4;
 
-export interface ChunkIndex {
+export const CHUNKS_LENGTH = 1024;
+
+export interface ChunkDat extends ReadonlyArray<Entry> {
+  [index: number]: Entry;
+}
+
+export interface Entry {
   sectors: number;
   offset: number;
 }
 
-export function readChunkIndicies(data: Buffer): ChunkIndex[] {
-  const chunkIndicies: ChunkIndex[] = [];
+export function readChunkIndicies(data: Buffer): ChunkDat {
+  const chunkIndicies: ChunkDat = Object.seal(Array.from<ChunkDat[number]>({ length: CHUNKS_LENGTH }));
 
   for (let i = CHUNK_INDICIES_OFFSET; i < SECTOR_LENGTH; i += CHUNK_INDEX_LENGTH){
+    const index: number = i / CHUNK_INDEX_LENGTH;
     const sectors: number = data.readUInt8(i) * SECTOR_LENGTH;
     const offset: number = (data.readUInt32LE(i) >> 8) * SECTOR_LENGTH;
-    chunkIndicies.push({ sectors, offset });
+    chunkIndicies[index] = { sectors, offset };
   }
 
   return chunkIndicies;
