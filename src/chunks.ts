@@ -1,3 +1,5 @@
+import type { ByteArrayTag } from "nbtify";
+
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);
 
@@ -7,10 +9,16 @@ export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
 }
 
 export interface ChunksDat extends ReadonlyArray<Chunk | null> {
-  [index: number]: Chunk;
+  [index: number]: Chunk | null;
 }
 
-export interface Chunk {}
+export interface Chunk {
+  Blocks: ByteArrayTag;
+  Data: ByteArrayTag;
+  SkyLight: ByteArrayTag;
+  BlockLight: ByteArrayTag;
+  Biome: ByteArrayTag;
+}
 
 export const SECTOR_LENGTH = 4096;
 
@@ -24,7 +32,7 @@ export interface ChunkEntries extends ReadonlyArray<Entry> {
 }
 
 export interface Entry {
-  data: Uint8Array | null;
+  data: Buffer | null;
   index: number;
   byteOffset: number;
   byteLength: number;
@@ -37,7 +45,7 @@ export function readChunkEntries(data: Buffer): ChunkEntries {
     const index: number = i / CHUNK_INDEX_LENGTH;
     const entryLength: number = data.readUint8(i) * SECTOR_LENGTH;
     const entryOffset: number = (data.readUint32LE(i) >> 8) * SECTOR_LENGTH;
-    const entry: Uint8Array | null = entryLength !== 0 ? data.subarray(entryOffset,entryOffset + entryLength) : null;
+    const entry: Buffer | null = entryLength !== 0 ? data.subarray(entryOffset,entryOffset + entryLength) : null;
     chunkEntries[index] = { data: entry, index, byteOffset: entryOffset, byteLength: entryLength };
   }
 
