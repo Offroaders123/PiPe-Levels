@@ -1,4 +1,4 @@
-import type { ByteArrayTag } from "nbtify";
+import { BiomeResource, BlockResource } from "../Region-Types/src/pi/index.js";
 
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);
@@ -18,11 +18,11 @@ export interface ChunksDat extends ReadonlyArray<Chunk | null> {
 }
 
 export interface Chunk {
-  Blocks: ByteArrayTag;
-  Data: ByteArrayTag;
-  SkyLight: ByteArrayTag;
-  BlockLight: ByteArrayTag;
-  Biome: ByteArrayTag;
+  Blocks: (keyof typeof BlockResource)[];
+  Data: Uint8Array;
+  SkyLight: Uint8Array;
+  BlockLight: Uint8Array;
+  Biome: (keyof typeof BiomeResource)[];
 }
 
 export function readChunks(entries: ChunkEntries): ChunksDat {
@@ -43,11 +43,11 @@ export function readEntry(entry: Entry): Chunk | null {
   const byteLength: number = data.readUint32LE(0);
   data = data.subarray(ENTRY_HEADER_LENGTH,byteLength);
 
-  const Blocks: ByteArrayTag = new Int8Array(data.subarray(0,0x8000));
-  const Data: ByteArrayTag = new Int8Array(data.subarray(0x8000,0x8000 + 0x4000));
-  const SkyLight: ByteArrayTag = new Int8Array(data.subarray(0xc000,0xc000 + 0x4000));
-  const BlockLight: ByteArrayTag = new Int8Array(data.subarray(0x10000,0x10000 + 0x4000));
-  const Biome: ByteArrayTag = new Int8Array(data.subarray(0x14000,0x14000 + 0x100));
+  const Blocks: (keyof typeof BlockResource)[] = [...data.subarray(0,0x8000)].map(id => BlockResource[id]! as keyof typeof BlockResource);
+  const Data = new Uint8Array(data.subarray(0x8000,0x8000 + 0x4000));
+  const SkyLight = new Uint8Array(data.subarray(0xc000,0xc000 + 0x4000));
+  const BlockLight = new Uint8Array(data.subarray(0x10000,0x10000 + 0x4000));
+  const Biome: (keyof typeof BiomeResource)[] = [...data.subarray(0x14000,0x14000 + 0x100)].map(id => BiomeResource[id]! as keyof typeof BiomeResource);
   return { Blocks, Data, SkyLight, BlockLight, Biome };
 }
 
