@@ -1,5 +1,10 @@
 import type { ByteArrayTag } from "nbtify";
 
+// // @ts-expect-error
+// Int8Array.prototype[Symbol.for("nodejs.util.inspect.custom")] = function(this: Int8Array){
+//   return `${Int8Array.name}(${this.byteLength})`;
+// };
+
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);
 
@@ -42,13 +47,12 @@ export function readEntry(entry: Entry): Chunk | null {
   if (data === null) return null;
   const byteLength: number = data.readUint32LE(0);
   data = data.subarray(ENTRY_HEADER_LENGTH,byteLength);
-  return [data, byteLength - ENTRY_HEADER_LENGTH, data.byteLength];
 
-  const Blocks: ByteArrayTag = new Int8Array();
-  const Data: ByteArrayTag = new Int8Array();
-  const SkyLight: ByteArrayTag = new Int8Array();
-  const BlockLight: ByteArrayTag = new Int8Array();
-  const Biome: ByteArrayTag = new Int8Array();
+  const Blocks: ByteArrayTag = new Int8Array(data.subarray(0,0x8000));
+  const Data: ByteArrayTag = new Int8Array(data.subarray(0x8000,0x8000 + 0x4000));
+  const SkyLight: ByteArrayTag = new Int8Array(data.subarray(0xc000,0xc000 + 0x4000));
+  const BlockLight: ByteArrayTag = new Int8Array(data.subarray(0x10000,0x10000 + 0x4000));
+  const Biome: ByteArrayTag = new Int8Array(data.subarray(0x14000,0x14000 + 0x100));
   return { Blocks, Data, SkyLight, BlockLight, Biome };
 }
 
