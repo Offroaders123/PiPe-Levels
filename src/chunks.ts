@@ -26,9 +26,8 @@ export interface ChunkEntries extends ReadonlyArray<Entry> {
 export interface Entry {
   data: Uint8Array | null;
   index: number;
-  sectors: number;
-  offset: number;
-  length: number;
+  byteOffset: number;
+  byteLength: number;
 }
 
 export function readChunkEntries(data: Buffer): ChunkEntries {
@@ -36,11 +35,10 @@ export function readChunkEntries(data: Buffer): ChunkEntries {
 
   for (let i = CHUNK_INDICIES_OFFSET; i < SECTOR_LENGTH; i += CHUNK_INDEX_LENGTH){
     const index: number = i / CHUNK_INDEX_LENGTH;
-    const sectors: number = data.readUInt8(i) * SECTOR_LENGTH;
-    const offset: number = (data.readUInt32LE(i) >> 8) * SECTOR_LENGTH;
-    const length: number = offset !== 0 ? data.readUInt32LE(offset) : 0;
-    const entry: Uint8Array | null = length !== 0 ? data.subarray(offset,offset + length) : null;
-    chunkEntries[index] = { data: entry, index, sectors, offset, length };
+    const entryLength: number = data.readUint8(i) * SECTOR_LENGTH;
+    const entryOffset: number = (data.readUint32LE(i) >> 8) * SECTOR_LENGTH;
+    const entry: Uint8Array | null = entryLength !== 0 ? data.subarray(entryOffset,entryOffset + entryLength) : null;
+    chunkEntries[index] = { data: entry, index, byteOffset: entryOffset, byteLength: entryLength };
   }
 
   return chunkEntries;
