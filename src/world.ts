@@ -1,6 +1,8 @@
+import { readChunksDat } from "./chunks.js";
 import { readEntitiesDat } from "./entities.js";
 import { readLevelDat } from "./level.js";
 
+import type { ChunksDat } from "./chunks.js";
 import type { EntitiesDat } from "./entities.js";
 import type { LevelDat } from "./level.js";
 
@@ -21,7 +23,7 @@ export async function readWorld(files: File[]): Promise<World> {
 }
 
 export interface WorldFileNameMap {
-  "chunks.dat": Buffer | null;
+  "chunks.dat": ChunksDat | null;
   "entities.dat": EntitiesDat | null;
   "level.dat": LevelDat | null;
   "level.dat_old": LevelDat | null;
@@ -37,7 +39,7 @@ async function readWorldFile<K extends keyof WorldFileNameMap>(name: K, files: F
   }
 
   switch (name){
-    case "chunks.dat": return buffer as WorldFileNameMap[K];
+    case "chunks.dat": return readChunksDat(buffer) as Promise<WorldFileNameMap[K]>;
     case "entities.dat": return readEntitiesDat(buffer) as Promise<WorldFileNameMap[K]>;
     case "level.dat": return readLevelDat(buffer) as Promise<WorldFileNameMap[K]>;
     case "level.dat_old": return readLevelDat(buffer) as Promise<WorldFileNameMap[K]>;
