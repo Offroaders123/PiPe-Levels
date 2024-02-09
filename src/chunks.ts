@@ -8,18 +8,18 @@ import type { ByteArrayTag } from "nbtify";
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);
 
-  console.log(data.subarray(0,SECTOR_LENGTH));
+  // console.log(data.subarray(0,SECTOR_LENGTH));
   const chunkEntries = readChunkEntries(data);
   // console.log(chunkEntries.slice(13,17));
 
   const chunks = readChunks(chunkEntries);
-  console.log(chunks.slice(13,17));
+  // console.log(chunks.slice(13,17));
 
   return chunks;
 }
 
-export interface ChunksDat extends ReadonlyArray<Chunk | null> {
-  [index: number]: Chunk | null;
+export interface ChunksDat extends ReadonlyArray<Chunk | object> {
+  [index: number]: Chunk | object;
 }
 
 export interface Chunk {
@@ -42,9 +42,9 @@ export function readChunks(entries: ChunkEntries): ChunksDat {
 
 export const ENTRY_HEADER_LENGTH = 4;
 
-export function readEntry(entry: Entry): Chunk | null {
+export function readEntry(entry: Entry): Chunk | object {
   let { data } = entry;
-  if (data === null) return null;
+  if (data === null) return {};
   const byteLength: number = data.readUint32LE(0);
   data = data.subarray(ENTRY_HEADER_LENGTH,byteLength);
 
