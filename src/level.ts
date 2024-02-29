@@ -10,7 +10,9 @@ export const LEVEL_DAT_FORMAT = {
   bedrockLevel: true
 } as const satisfies Format;
 
-export interface LevelDat extends NBTData {
+export type LevelDatFile = NBTData<LevelDat>;
+
+export interface LevelDat {
   GameType: IntTag<GameMode>;
   LastPlayed: LongTag;
   LevelName: StringTag;
