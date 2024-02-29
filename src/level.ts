@@ -1,13 +1,13 @@
 import { read } from "nbtify";
 
 import type { Format, NBTData, IntTag, LongTag, StringTag } from "nbtify";
-import type { Player } from "../Region-Types/src/bedrock/entity.js";
+import type { Player } from "../Region-Types/dist/bedrock/entity.js";
 
 export const LEVEL_DAT_FORMAT = {
   rootName: "",
   endian: "little",
   compression: null,
-  bedrockLevel: 3
+  bedrockLevel: true
 } as const satisfies Format;
 
 export interface LevelDat extends NBTData {
@@ -31,7 +31,7 @@ export type GameMode = 0 | 1;
 
 export type Platform = 2;
 
-export type StorageVersion = 3; // wait, hold on just a minute!!
+export type StorageVersion = 3;
 
 export async function readLevelDat(data: Buffer): Promise<NBTData<LevelDat>> {
   const levelDat: NBTData<LevelDat> = await read<LevelDat>(data,LEVEL_DAT_FORMAT);

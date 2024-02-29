@@ -6,7 +6,7 @@ export const ENTITIES_DAT_FORMAT = {
   rootName: "",
   endian: "little",
   compression: null,
-  bedrockLevel: null
+  bedrockLevel: false
 } as const satisfies Format;
 
 export interface EntitiesDat extends NBTData {
