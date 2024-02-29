@@ -1,4 +1,4 @@
-import { BiomeResource, BlockResource } from "../Region-Types/dist/pi/index.js";
+import { BiomeResource, BlockResource } from "region-types/dist/pi/index.js";
 
 export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(data);

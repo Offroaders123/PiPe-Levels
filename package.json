@@ -10,7 +10,8 @@
     "dev": "tsc --watch"
   },
   "dependencies": {
-    "nbtify": "^1.90.0"
+    "nbtify": "^1.90.0",
+    "region-types": "file:Region-Types"
   },
   "devDependencies": {
     "@types/node": "^20.11.24",
