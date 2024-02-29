@@ -1,7 +1,7 @@
 import { read } from "nbtify";
 
 import type { Format, NBTData, IntTag, LongTag, StringTag } from "nbtify";
-import type { Player } from "region-types/dist/bedrock/entity.js";
+import type { Player } from "region-types/dist/pi/entity.js";
 
 export const LEVEL_DAT_FORMAT = {
   rootName: "",

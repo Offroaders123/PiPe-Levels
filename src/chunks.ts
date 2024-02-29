@@ -8,7 +8,7 @@ export async function readChunksDat(data: Buffer): Promise<ChunksDat> {
   // console.log(chunkEntries.slice(13,17));
 
   const chunks = readChunks(chunkEntries);
-  console.log(chunks.slice(13,17));
+  // console.log(chunks.slice(13,17));
 
   return chunks;
 }
